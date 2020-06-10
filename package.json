@@ -1,0 +1,33 @@
+{
+  "name": "featureservice-translator",
+  "version": "1.0.0",
+  "description": "Translate fields in an existing feature service using google translate.",
+  "main": "index.js",
+  "dependencies": {
+    "@esri/arcgis-rest-auth": "^2.13.1",
+    "@esri/arcgis-rest-feature-layer": "^2.13.1",
+    "@esri/arcgis-rest-portal": "^2.13.1",
+    "@esri/arcgis-rest-request": "^2.13.1",
+    "@google-cloud/translate": "^6.0.0",
+    "cross-fetch": "^3.0.4",
+    "dotenv": "^8.2.0",
+    "form-data": "^3.0.0",
+    "googletrans": "^1.0.0",
+    "isomorphic-form-data": "^2.0.0",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apfister/featureservice-translator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apfister/featureservice-translator/issues"
+  },
+  "homepage": "https://github.com/apfister/featureservice-translator#readme"
+}

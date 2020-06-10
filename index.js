@@ -1,19 +1,23 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 require("cross-fetch/polyfill");
 require("isomorphic-form-data");
-
-const tr = require("googletrans").default;
 const fs = require('fs');
+
+let rawConfig = fs.readFileSync('config.json');
+let config = JSON.parse(rawConfig);
+
+// doc @ https://googleapis.dev/nodejs/translate/latest/v2.Translate.html#translate
+const {Translate} = require('@google-cloud/translate').v2;
+const translate = new Translate({projectId: config.gctProjectId});
 const FormData = require('form-data');
 
 const { UserSession } = require('@esri/arcgis-rest-auth');
 const { getItem } = require('@esri/arcgis-rest-portal');
-const { queryFeatures } = require('@esri/arcgis-rest-feature-layer');
-const { applyEdits } = require('@esri/arcgis-rest-feature-layer');
-// const { addToServiceDefinition } = require('@esri/arcgis-rest-service-admin');
-const { request } = require('@esri/arcgis-rest-request');
+const { queryFeatures, applyEdits } = require('@esri/arcgis-rest-feature-layer');
 
-let rawConfig = fs.readFileSync('config.json');
-let config = JSON.parse(rawConfig);
 
 let fsUrl = config.fsToBeTranslated;
 
@@ -73,6 +77,7 @@ async function main() {
     where: '1=1',
     outFields: ['OBJECTID'].concat(config.fieldsToTranslate),
     returnGeometry,
+    resultRecordCount: 15,
     authentication: userSession
   };
 
@@ -94,17 +99,25 @@ async function main() {
 async function processTranslations (features) {
   let responses = [];
   const opts =  {from: config.from, to: config.to};
-  await Promise.all(features.map(async (feature) => {
+  await Promise.all(features.map(async (feature, index) => {
+    console.log(`translating ${index} of ${features.length} ...`)
     await Promise.all(config.fieldsToTranslate.map(async field => {
       const sourceText = feature.attributes[field];
-      const res = await tr(sourceText, opts);
-      feature.attributes[`${field}_${config.to}`] = res.text;
+      const [translation] = await translate.translate(sourceText, {from: config.from, to:config.to});
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      feature.attributes[`${field}_${config.to}`] = translation;
       delete feature.attributes[field];
       responses.push(feature);
     }));
     
   }));
   return responses;
+}
+
+async function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  });
 }
 
 main();

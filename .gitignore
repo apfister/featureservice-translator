@@ -1,3 +1,5 @@
 .vscode
+.env
+gcp
 node_modules
 config.json
