@@ -1,8 +1,14 @@
 # Feature Service Translator
-
 Translate fields in an existing feature service using google translate.
 
+## Requirements
+- NodeJs
+- A hosted feature service
+- An `OBJECTID` field in said feature service
+
+## Setup
 - Add a `config.json` file in your root that follows the example below
+- run `node index.js` from your favorite terminal application
 - The output will create fields in your feature service that follows this pattern: `fieldName_{languageCode}`
 
 `config.json.` example

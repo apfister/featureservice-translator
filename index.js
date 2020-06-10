@@ -14,7 +14,6 @@ const { request } = require('@esri/arcgis-rest-request');
 
 let rawConfig = fs.readFileSync('config.json');
 let config = JSON.parse(rawConfig);
-console.log(config);
 
 let fsUrl = config.fsToBeTranslated;
 
@@ -33,7 +32,7 @@ async function main() {
       fsUrl = `${fsUrl}/0`;
     }
   }
-  console.log(fsUrl);
+  // console.log(fsUrl);
 
   let returnGeometry = false;
   if (config.createNew) {
@@ -63,7 +62,7 @@ async function main() {
       body: form
     }).then(response => response.json());
    
-    console.log(addFieldsResponse);
+    // console.log(addFieldsResponse);
   } catch (error) {
     console.log(error);
   }
@@ -73,7 +72,6 @@ async function main() {
     url: fsUrl,
     where: '1=1',
     outFields: ['OBJECTID'].concat(config.fieldsToTranslate),
-    resultRecordCount: 5,
     returnGeometry,
     authentication: userSession
   };
@@ -81,7 +79,7 @@ async function main() {
   const response = await queryFeatures(queryOptions);
   
   const results = await processTranslations(response.features);
-  console.log(results);  
+  // console.log(results);  
 
   const editResults = await applyEdits({
     authentication: userSession,
@@ -89,7 +87,7 @@ async function main() {
     updates: results
   });
 
-  console.log(editResults);
+  // console.log(editResults);
   console.log('all done!');
  }
 
