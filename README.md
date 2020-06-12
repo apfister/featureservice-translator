@@ -4,50 +4,53 @@ Translate fields in an existing feature service using google translate.
 ## Requirements & Setup
 - Install NodeJs
 - git clone or download the repo
-- Google Cloud Platform Project with Google Cloud Translatation API setup ([from google doc on github](https://github.com/googleapis/nodejs-translate/blob/master/README.md#before-you-begin))
-  1.  [Select or create a Cloud Platform project][projects].
-  1.  [Enable billing for your project][billing].
-  1.  [Enable the Cloud Translation API][enable_api].
-  1.  [Set up authentication with a service account][auth] so you can access the
-    API from your local workstation.
-  1. From the Crendential section in your Google Cloud Platform project, donwload the JSON file that contains your service account key
-  1. Create a `.env` file at the root of your application and add an entry to reference the account key JSON file
-    `GOOGLE_APPLICATION_CREDENTIALS=/home/user/Downloads/[FILE_NAME].json`
+- Get your Google Translate API Key
+- Create a `.env` file at the root of your application and add an entry to reference your API Key
+   > `GOOGLE_TRANSLATE_API=<API KEY>`
 - from a terminal, change the directory to what you just cloned/downloaded by using `cd <directoryName>`
 - run `npm install` to install any dependencies
 - Add a `config.json` file in your root that follows the example below
-- A hosted feature service
-- Make sure you feature service has an `OBJECTID` field 
+- Find your hosted feature service
+  - Make sure you feature service has an `OBJECTID` field 
+  - Fill in the  `config.json` file with your feature service info
 - run `node index.js` from your favorite terminal application
 - The output will create fields in your feature service that follows this pattern: `fieldName_{languageCode}`
 
-`config.json.` example
+`config.json` example
 ```
 {
-  // for secured services
-  "username": "<arcgis online username>",
-  "password": "<password>",
-
-  // id of your GCP project
-  "gctProjectId": "my-gcp-project",
-
+  // required
   // or feature service URL with /layerId
   "fsToBeTranslated": "86fb386a36e542c3949e2c354d76f0bf", 
-  
-   // ignored if you are using an ArcGIS Online itemId
-  "layerId": 0,
-  
-  // from language code
-  "from": "en", 
 
-  // to language code
+  // required
+  // output translation language code
   "to": "hi", 
-  
+
+  // required
   // fields to translate. '*' currently not supported :/
   "fieldsToTranslate": [ 
     "event_type",
     "notes"
-  ]
+  ],
+
+  // optional
+  // ignored if you are using an ArcGIS Online itemId
+  "layerId": 0,
+
+  // optional
+  // for secured services
+  "username": "<arcgis online username>",
+  "password": "<password>",
+  
+  // optional
+  // where clause for feature service. defaults to 1=1
+  "where": "STATE = 'Wisconsin'",
+
+  // optional
+  // can be used to limit results. defaults to null (no limit or feature service defined limit)
+  "resultRecordCount": 10
+
 }
 ```
 
